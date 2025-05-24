@@ -1,0 +1,46 @@
+-- Instagram Analysis: SQL Questions
+
+-- 1. How many unique post types are found in the 'fact_content' table?
+
+-- 2. What are the highest and lowest recorded impressions for each post type?
+
+-- 3. Filter all the posts that were published on a weekend in the month of March and April and export them to a separate CSV file.
+
+-- 4. Create a report to get the statistics for the account with the following fields:
+--    • month_name
+--    • total_profile_visits
+--    • total_new_followers
+
+-- 5. Write a CTE that calculates the total number of 'likes’ for each 'post_category' during the month of 'July' and arrange the 'post_category' values in descending order according to their total likes.
+
+-- 6. Create a report that displays the unique post_category names alongside their respective counts for each month. The output should have:
+--    • month_name
+--    • post_category_names
+--    • post_category_count
+-- Example:
+--    • 'April', 'Earphone,Laptop,Mobile,Other Gadgets,Smartwatch', '5'
+--    • 'February', 'Earphone,Laptop,Mobile,Smartwatch', '4'
+
+-- 7. What is the percentage breakdown of total reach by post type? The final output includes:
+--    • post_type
+--    • total_reach
+--    • reach_percentage
+
+-- 8. Create a report including the quarter, total comments, and total saves recorded for each post category. Assign quarters as:
+--    Q1: January, February, March
+--    Q2: April, May, June
+--    Q3: July, August, September
+-- Output columns:
+--    • post_category
+--    • quarter
+--    • total_comments
+--    • total_saves
+
+-- 9. List the top three dates in each month with the highest number of new followers. Output columns:
+--    • month
+--    • date
+--    • new_followers
+
+-- 10. Create a stored procedure that takes 'Week_no' as input and generates a report displaying total shares for each 'post_type'. Output columns:
+--     • post_type
+--     • total_shares
