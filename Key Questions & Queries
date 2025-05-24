@@ -1,0 +1,198 @@
+1. How many unique post types are found in the 'fact_content' table?
+
+SELECT COUNT(DISTINCT post_type) AS unique_post_types
+FROM fact_content;
+
+
+2. What are the highest and lowest recorded impressions for each post type?
+
+SELECT
+    Post_type,
+    MAX(Impressions) AS highest_impressions,
+    MIN(Impressions) AS lowest_impressions
+FROM fact_content
+GROUP BY Post_type;
+
+
+3. Filter all the posts that were published on a weekend in the month of March and April and export them to a separate CSV file.
+
+SELECT
+fc.date, fc.post_category, fc.post_type,
+fc.impressions, fc.reach, fc.likes, fc.comments, fc.shares
+FROM
+fact_content fc
+JOIN
+dim_dates dd ON fc.date dd.date
+WHERE
+dd.weekday_or_weekend = 'weekend'
+AND dd.month_name IN ('March', 'April');
+
+
+4. Create a report to get the statistics for the account. The final output 
+includes the following fields: 
+• month_name 
+• total_profile_visits 
+• total_new_followers 
+
+select
+dd.month_name,
+sum(fa.profile_visits) as total_profile_visits,
+sum(fa.new_followers) as total_new_followers
+from fact_account fa
+join dim_dates dd on fa.date dd.date
+group by dd.month_name
+order by min(dd.date);
+
+
+5. Write a CTE that calculates the total number of 'likes’ for each 
+'post_category' during the month of 'July' and subsequently, arrange the 
+'post_category' values in descending order according to their total likes. 
+
+with likes_cte as (
+select
+post_category, sum(likes) as total likes
+from fact_content
+join dim_dates on fact_content.date dim_dates.date
+where dim_dates.month_name = 'July'
+group by post_category )
+select
+post_category,
+total_likes
+from likes_cte
+order by total_likes desc;
+
+
+6. Create a report that displays the unique post_category names alongside 
+their respective counts for each month. The output should have three 
+columns:  
+• month_name 
+• post_category_names  
+• post_category_count 
+
+SELECT
+dd.month_name,
+GROUP_CONCAT(DISTINCT fc.post_category) AS post_category_names, COUNT (DISTINCT fc.post_category) AS post_category_count
+FROM fact_content fc
+JOIN dim dates dd ON fc.date = dd.date
+GROUP BY dd.month_name
+ORDER BY MIN(dd.date);
+
+
+7. What is the percentage breakdown of total reach by post type?  The final 
+output includes the following fields: 
+• post_type 
+• total_reach 
+• reach_percentage 
+
+SELECT
+post_type,
+SUM(reach) AS total_reach,
+ROUND(SUM(reach) * 100.0 / SUM(SUM(reach)) OVER (), 2)
+AS reach_percentage
+FROM fact_content
+GROUP BY post_type
+ORDER BY reach_percentage DESC;
+
+
+8. Create a report that includes the quarter, total comments, and total 
+saves recorded for each post category. Assign the following quarter 
+groupings: 
+(January, February, March) → “Q1” 
+(April, May, June) → “Q2” 
+(July, August, September) → “Q3”
+
+select
+fc.post_category,
+case
+when dd.month_name in ('January', 'February', 'March') then '01'
+when dd.month_name in ('April', "May', 'June') then '02'
+when dd.month_name in ('July', 'August', 'September') then '03'
+else '04"
+end as quarter,
+sum(fc.comments) as total_comments,
+sum(fc.saves) as total_saves
+from fact_content fc
+join dim dates dd on fc.date dd.date
+group by post_category, quarter
+order by quarter, post_category;
+
+
+9. List the top three dates in each month with the highest number of new 
+followers. The final output should include the following columns: 
+• month 
+• date 
+• new_followers 
+
+WITH ranked AS (
+SELECT
+d.month name,
+fa.date,
+fa.new_followers,
+ROM NUMBER() OVER (PARTITION BY d.month name ORDER BY fa.new_followers DESC) AS rn
+FROR fact account fa
+J0IN dim dates d ON fa.date= d.date
+)
+SELECT month_name, date, new_followers
+FROM ranked
+WHERE rn <3
+ORDER BY month name, new followers DESC
+
+
+10.  Create a stored procedure that takes the 'Week_no' as input and 
+generates a report displaying the total shares for each 'Post_type'. The 
+output of the procedure should consist of two columns: 
+• post_type 
+• total_shares 
+
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS GetSharesByPost Type SS
+CREATE PROCEDURE GetSharesByPostType(IN week_no_input VARCHAR(10))
+BEGIN
+SELECT
+fc.post_type,
+SUM(fc.shares) AS total shares
+FROM fact content fc
+JOIN dim dates dd ON fc.date = dd.date
+WHERE dd.week_no = week_no_input
+GROUP BY fc.post_type
+ORDER BY total shares DESC
+END $$
+DELIMITER
+CALL GetSharesByPostType("W1');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
